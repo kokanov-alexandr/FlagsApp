@@ -1,6 +1,7 @@
 ﻿using FlagsApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace FlagsApp.Api
 {
@@ -23,7 +24,7 @@ namespace FlagsApp.Api
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
-        {
+        {   
             var flag = await dbContext.Flags.FindAsync(id);
 
             if (flag == null)
@@ -63,6 +64,24 @@ namespace FlagsApp.Api
             dbContext.RemoveRange(dbContext.Flags);
             await dbContext.SaveChangesAsync();
             return Ok();
-        }s
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] FlagDTO flagDTO)
+        {
+            var flag = await dbContext.Flags.FindAsync(id);
+
+            if (flag == null)
+            {
+                return BadRequest();
+            }
+
+            flag.CountryName = flagDTO.CountryName ?? flag.CountryName;
+            flag.ImageName = flagDTO.ImageName ?? flag.ImageName;
+            flag.ImageSrc = flagDTO.ImageSrc ?? flag.ImageSrc;
+            
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

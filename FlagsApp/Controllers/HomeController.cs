@@ -10,15 +10,18 @@ namespace FlagsApp.Controllers
 
 
         private readonly ILogger<HomeController> _logger;
+        private FlagsApiService flagsApiService;
 
         public HomeController(ILogger<HomeController> logger, FlagsDBContext dbContext)
         {
             _logger = logger;
+            flagsApiService = new FlagsApiService();
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View();
+            var flags = await flagsApiService.GetAllFlags();
+            return View(flags);      
         }
 
         public IActionResult Privacy()
