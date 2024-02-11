@@ -1,6 +1,5 @@
 using FlagsApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FlagsApp.Controllers
