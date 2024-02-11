@@ -24,6 +24,13 @@ namespace FlagsApp.Controllers
             return View(flags);      
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Flag(int id)
+        {
+            var flag = await flagsApiService.GetFlag(id);
+            return View(flag);
+        }
+
         public IActionResult Privacy()
         {
             return View();

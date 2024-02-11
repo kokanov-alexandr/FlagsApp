@@ -11,11 +11,11 @@
                     <img src="~/images/@i.ImageName" class="card-img-top" alt="@i.CountryName">
                     <div class="card-body">
                         <h5 class="card-title">@i.CountryName</h5>
-                        <a href="#" class="btn btn-dark">Подробнее</a>
+                        @Html.ActionLink("Подробнее", "Flag", "Home", new { id = @i.Id }, new { @class = "btn btn-dark" })
                     </div>
                 </div>
             </div>
         }
-    </div>
+    </div>ч
 </div>
 

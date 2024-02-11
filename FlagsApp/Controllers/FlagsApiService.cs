@@ -1,4 +1,6 @@
 ﻿using FlagsApp.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
@@ -14,14 +16,21 @@ namespace FlagsApp.Controllers
         public FlagsApiService()
         {
             httpClient = new HttpClient();
+
+
         }
 
         public void SaveImage(Flag flag)
         {
-            WebClient webClient = new();
-            var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            var imagePath = Path.Combine(wwwrootPath, "Images", flag.ImageSrc.Split("/").Last());
-            webClient.DownloadFile(flag.ImageSrc, imagePath);
+           
+                WebClient webClient = new();
+                var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var imagePath = Path.Combine(wwwrootPath, "Images", flag.ImageSrc.Split("/").Last());
+
+                webClient.DownloadFile(flag.ImageSrc, imagePath);
+
+
+
         }
 
         public bool IsImageSave(Flag flag)
@@ -74,11 +83,21 @@ namespace FlagsApp.Controllers
                     await Console.Out.WriteLineAsync($"{i + 1} / {flagsCount} processed");;
                 }
             }
-            foreach (var flag in flags)
-            {
-               
-            }
             return flags;
+        }
+
+
+
+        public async Task<Flag> GetFlag(int id)
+        {
+            var response = await httpClient.GetAsync(baseApiUrl + id.ToString());
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+
+            return JsonConvert.DeserializeObject<Flag>(await response.Content.ReadAsStringAsync());
         }
     }
 }
