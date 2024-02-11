@@ -7,6 +7,7 @@ namespace FlagsApp.Controllers
 {
     public class FlagsApiService
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient httpClient;
         private const string baseApiUrl = "https://localhost:7156/api/flagsApi/";
 
@@ -18,7 +19,9 @@ namespace FlagsApp.Controllers
         public void SaveImage(Flag flag)
         {
             WebClient webClient = new();
-            webClient.DownloadFile(flag.ImageSrc, "Images/" + flag.ImageSrc.Split("/").Last());
+            var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var imagePath = Path.Combine(wwwrootPath, "Images", flag.ImageSrc.Split("/").Last());
+            webClient.DownloadFile(flag.ImageSrc, imagePath);
         }
 
         public bool IsImageSave(Flag flag)
@@ -59,14 +62,21 @@ namespace FlagsApp.Controllers
 
             var flags = JsonConvert.DeserializeObject<List<Flag>>(await response.Content.ReadAsStringAsync());
 
+
+
+            int flagsCount = flags.Count();
+            for (int i = 0; i < flagsCount; i++)
+            {
+                if (!IsImageSave(flags[i]))
+                {
+                    await UpdateImage(flags[i]);
+                    SaveImage(flags[i]);
+                    await Console.Out.WriteLineAsync($"{i + 1} / {flagsCount} processed");;
+                }
+            }
             foreach (var flag in flags)
             {
-                if (!IsImageSave(flag))
-                {
-                    await UpdateImage(flag);
-                    SaveImage(flag);
-                    Console.WriteLine(flag.Id.ToString()  + " processed");
-                }
+               
             }
             return flags;
         }
