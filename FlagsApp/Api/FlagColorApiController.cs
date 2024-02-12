@@ -36,6 +36,7 @@ namespace FlagsApp.Api
             await dbContext.SaveChangesAsync();
             return Ok();
         }
+
         [HttpDelete("{flagId}/{colorId}")]
         public async Task<IActionResult> Delete(int flagId, int colorId)
         {
@@ -56,21 +57,43 @@ namespace FlagsApp.Api
         {
             var colorsForFlag = await dbContext.FlagColors
                 .Where(fc => fc.FlagId == flagId)
-                .Select(fc => fc.ColorId)
+                .Join(
+                    dbContext.Colors,  
+                    fc => fc.ColorId,   
+                    c => c.Id,          
+                    (fc, c) => c 
+                )
                 .ToListAsync();
 
             return Ok(colorsForFlag);
         }
 
         [HttpGet("FlagsByColorId/{colorId}")]
-        public async Task<IActionResult> GetFlagsByColorId(int colorId)
+        public async Task<IActionResult> GetFlagsByColorId(int flagId)
         {
-            var colorsForFlag = await dbContext.FlagColors
-                .Where(fc => fc.ColorId == colorId)
-                .Select(fc => fc.FlagId)
-                .ToListAsync();
+            var flagsForColor = await dbContext.FlagColors
+               .Where(fc => fc.ColorId == flagId)
+               .Join(
+                   dbContext.Flags,
+                   fc => fc.FlagId,
+                   f => f.Id,
+                   (fc, f) => f
+               )
+               .ToListAsync();
 
-            return Ok(colorsForFlag);
+            return Ok(flagsForColor);
         }
+
+        [HttpDelete("ColorsByFlagId/{flagId}")]
+        public async Task<IActionResult> DeleteColorsByFlagId(int flagId)
+        {
+            var colors = dbContext.FlagColors.Where(fc => fc.FlagId == flagId).ToList();
+
+            dbContext.RemoveRange(colors);
+            await dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+
     }
 }

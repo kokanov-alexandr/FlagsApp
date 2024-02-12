@@ -9,28 +9,22 @@ namespace FlagsApp.Controllers
 {
     public class FlagsApiService
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient httpClient;
         private const string baseApiUrl = "https://localhost:7156/api/flagsApi/";
 
         public FlagsApiService()
         {
             httpClient = new HttpClient();
-
-
         }
 
         public void SaveImage(Flag flag)
         {
            
-                WebClient webClient = new();
-                var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                var imagePath = Path.Combine(wwwrootPath, "Images", flag.ImageSrc.Split("/").Last());
+            WebClient webClient = new();
+            var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var imagePath = Path.Combine(wwwrootPath, "Images", flag.ImageSrc.Split("/").Last());
 
-                webClient.DownloadFile(flag.ImageSrc, imagePath);
-
-
-
+            webClient.DownloadFile(flag.ImageSrc, imagePath);
         }
 
         public bool IsImageSave(Flag flag)

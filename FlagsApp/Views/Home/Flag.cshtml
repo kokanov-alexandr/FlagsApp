@@ -1,13 +1,28 @@
-﻿@model Flag
-@{
+﻿@{
     ViewData["Title"] = "View";
 }
-    
 
 <div class="card mb-3" style="width: 50rem;">
-    <img src="~/images/@Model.ImageName" class="card-img-top" alt="...">
+    <img src="~/images/@ViewBag.Flag.ImageName" class="card-img-top" alt="...">
     <div class="card-body">
-        <h5 class="card-title">@Model.CountryName</h5
+        <h4 class="card-title">@ViewBag.Flag.CountryName</h4>
+
+        <h5 class="card-title">Цвета флага</h5>
+
+
+        @using (Html.BeginForm("Flag", "Home", FormMethod.Post))
+        {
+            foreach (var color in ViewBag.Colors)
+            {
+                <label>
+                    <input class="form-check-input" type="checkbox" name="selectedColorIds" value="@color.Id" @(ViewBag.SelectedСolorsId.Contains(color.Id) ? "checked" : "") />
+                    @color.Name
+                </label>
+                <br />
+            }
+            <input type="hidden" name="flagId" value="@ViewBag.Flag.Id" />
+            <input class="btn btn-dark mt-2" type="submit" value="Save Colors" />
+        }
+
     </div>
 </div>
-
