@@ -58,7 +58,7 @@ namespace FlagsApp.Api
             var colorsForFlag = await dbContext.FlagColors
                 .Where(fc => fc.FlagId == flagId)
                 .Join(
-                    dbContext.Colors,  
+                    dbContext.Colors,   
                     fc => fc.ColorId,   
                     c => c.Id,          
                     (fc, c) => c 
@@ -69,10 +69,10 @@ namespace FlagsApp.Api
         }
 
         [HttpGet("FlagsByColorId/{colorId}")]
-        public async Task<IActionResult> GetFlagsByColorId(int flagId)
+        public async Task<IActionResult> GetFlagsByColorId(int colorId)
         {
             var flagsForColor = await dbContext.FlagColors
-               .Where(fc => fc.ColorId == flagId)
+               .Where(fc => fc.ColorId == colorId)
                .Join(
                    dbContext.Flags,
                    fc => fc.FlagId,
@@ -83,7 +83,7 @@ namespace FlagsApp.Api
 
             return Ok(flagsForColor);
         }
-
+        
         [HttpDelete("ColorsByFlagId/{flagId}")]
         public async Task<IActionResult> DeleteColorsByFlagId(int flagId)
         {

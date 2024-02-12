@@ -1,8 +1,6 @@
 using FlagsApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Diagnostics;
-using System.Linq;
 
 namespace FlagsApp.Controllers
 {
@@ -12,7 +10,6 @@ namespace FlagsApp.Controllers
         private FlagsApiService flagsApiService;
         private FlagColorApiService flagColorApiService;
         private ColorApiService colorApiService;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -24,7 +21,23 @@ namespace FlagsApp.Controllers
         public async Task<IActionResult> Index()
         {
             var flags = await flagsApiService.GetAllFlags();
-            return View(flags);      
+            var colors = await colorApiService.GetAllColors();
+
+            ViewBag.Flags = flags;
+            ViewBag.—olors = colors;
+            ViewBag.Selected—olorsId = new List<int>();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(List<int> selectedColorsId)
+        {
+            var flags = await flagColorApiService.GetAllFlagsByColorsId(selectedColorsId);
+            ViewBag.Flags = flags;
+            ViewBag.—olors = await colorApiService.GetAllColors();
+            ViewBag.Selected—olorsId = selectedColorsId;
+
+            return View("Index");
         }
 
         [HttpGet]

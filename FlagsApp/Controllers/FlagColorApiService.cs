@@ -29,6 +29,37 @@ namespace FlagsApp.Controllers
             return colors;
         }
 
+        public async Task<List<Color>> GetFlagsByColorId(int colorId)
+        {
+            var response = await httpClient.GetAsync(baseApiUrl + "FlagsByColorId/" + colorId.ToString());
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+
+            var flags = JsonConvert.DeserializeObject<List<Color>>(await response.Content.ReadAsStringAsync());
+            return flags;
+        }
+
+
+        public async Task<List<Flag>> GetAllFlagsByColorsId(List<int> selectedColorsId)
+        {
+            var allFlags = new List<Flag>();
+            foreach (var i in selectedColorsId)
+            {
+                var response = await httpClient.GetAsync(baseApiUrl + "FlagsByColorId/" + i.ToString());
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Error: {response.StatusCode}");
+                }
+
+                var flags = JsonConvert.DeserializeObject<List<Flag>>(await response.Content.ReadAsStringAsync()) ?? [];
+                allFlags.AddRange(flags);
+            }
+            var s = allFlags.Distinct().ToList();
+            return allFlags.Distinct().ToList();
+        }
         public async Task DeleteColorsByFlagId(int flagId)
         {
             var response = await httpClient.DeleteAsync(baseApiUrl + "ColorsByFlagId/" + flagId);
