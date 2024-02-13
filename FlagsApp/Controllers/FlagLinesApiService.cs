@@ -60,6 +60,7 @@ namespace FlagsApp.Controllers
             }
             return allFlags.Distinct().ToList();
         }
+
         public async Task DeleteLinesByFlagId(int flagId)
         {
             var response = await httpClient.DeleteAsync(baseApiUrl + "LinesByFlagId/" + flagId);
