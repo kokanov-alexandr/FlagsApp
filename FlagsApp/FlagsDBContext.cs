@@ -13,6 +13,7 @@ namespace FlagsApp
         public DbSet<FlagColor> FlagColors { get; set; }
         public DbSet<Lines> Lines { get; set; }
         public DbSet<FlagLines> FlagLines { get; set; }
+        public DbSet<GraphicElement> GraphicElements {  get; set; } 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
