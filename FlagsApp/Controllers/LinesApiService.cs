@@ -1,21 +1,22 @@
 ﻿using FlagsApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace FlagsApp.Controllers
 {
-    public class ColorApiService : Controller
+    public class LinesApiService : Controller
     {
         private readonly HttpClient httpClient;
-        private const string baseApiUrl = "https://localhost:7156/api/colorsApi/";
+        private const string baseApiUrl = "https://localhost:7156/api/linesApi/";
 
-        public ColorApiService()
+        public LinesApiService()
         {
             httpClient = new HttpClient();
         }
 
 
-        public async Task<List<Color>> GetAllColors()
+        public async Task<List<Lines>> GetAllLines()
         {
             var response = await httpClient.GetAsync(baseApiUrl);
 
@@ -24,12 +25,12 @@ namespace FlagsApp.Controllers
                 throw new Exception($"Error: {response.StatusCode}");
             }
 
-            return JsonConvert.DeserializeObject<List<Color>>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<List<Lines>>(await response.Content.ReadAsStringAsync());
         }
 
 
 
-        public async Task<Color> GetColor(int id)
+        public async Task<Lines> GetLines(int id)
         {
             var response = await httpClient.GetAsync(baseApiUrl + id.ToString());
 
@@ -38,7 +39,7 @@ namespace FlagsApp.Controllers
                 throw new Exception($"Error: {response.StatusCode}");
             }
 
-            return JsonConvert.DeserializeObject<Color>(await response.Content.ReadAsStringAsync());
+            return JsonConvert.DeserializeObject<Lines>(await response.Content.ReadAsStringAsync());
         }
     }
 }

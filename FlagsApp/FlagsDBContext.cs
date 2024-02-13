@@ -11,6 +11,9 @@ namespace FlagsApp
         public DbSet<Flag> Flags => Set<Flag>();
         public DbSet<Color> Colors => Set<Color>();
         public DbSet<FlagColor> FlagColors { get; set; }
+        public DbSet<Lines> Lines { get; set; }
+        public DbSet<FlagLines> FlagLines { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +29,19 @@ namespace FlagsApp
                 .HasOne<Color>()
                 .WithMany()
                 .HasForeignKey(fc => fc.ColorId);
+
+            modelBuilder.Entity<FlagLines>()
+                .HasKey(fl => new { fl.FlagId, fl.LinesId });
+
+            modelBuilder.Entity<FlagLines>()
+                .HasOne<Flag>()
+                .WithMany()
+                .HasForeignKey(fl => fl.FlagId);
+
+            modelBuilder.Entity<FlagLines>()
+                .HasOne<Lines>()
+                .WithMany()
+                .HasForeignKey(fl => fl.LinesId);
         }
 
     }

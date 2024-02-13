@@ -3,6 +3,7 @@ using FlagsApp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlagsApp.Migrations
 {
     [DbContext(typeof(FlagsDBContext))]
-    partial class FlagsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240213001648_AddLines")]
+    partial class AddLines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,21 +80,6 @@ namespace FlagsApp.Migrations
                     b.ToTable("FlagColors");
                 });
 
-            modelBuilder.Entity("FlagsApp.Models.FlagLines", b =>
-                {
-                    b.Property<int>("FlagId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LinesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FlagId", "LinesId");
-
-                    b.HasIndex("LinesId");
-
-                    b.ToTable("FlagLines");
-                });
-
             modelBuilder.Entity("FlagsApp.Models.Lines", b =>
                 {
                     b.Property<int>("Id")
@@ -120,21 +108,6 @@ namespace FlagsApp.Migrations
                     b.HasOne("FlagsApp.Models.Flag", null)
                         .WithMany()
                         .HasForeignKey("FlagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FlagsApp.Models.FlagLines", b =>
-                {
-                    b.HasOne("FlagsApp.Models.Flag", null)
-                        .WithMany()
-                        .HasForeignKey("FlagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FlagsApp.Models.Lines", null)
-                        .WithMany()
-                        .HasForeignKey("LinesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -2,19 +2,37 @@
     ViewData["Title"] = "Home Page";
 }
 <h4>Фильтры</h4>
-
-@using (Html.BeginForm("Index", "Home", FormMethod.Post))
-{
-    foreach (var color in ViewBag.Сolors)
+<div class="container">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
     {
-        <label>
-            <input class="form-check-input" type="checkbox" name="selectedColorsId" value="@color.Id" @(ViewBag.SelectedСolorsId.Contains(color.Id) ? "checked" : "") />
-            @color.Name
-        </label>
-        <br />
+        <div class="row">
+            <div class="col">
+                <h5>Цвета</h5>
+                @foreach (var color in ViewBag.Сolors)
+                {
+                <label>
+                    <input class="form-check-input" type="checkbox" name="selectedColorsId" value="@color.Id" @(ViewBag.SelectedСolorsId.Contains(color.Id) ? "checked" : "") />
+                    @color.Name
+                </label>
+                <br />
+                }
+            </div>
+            <div class="col">
+                <h5>Линии</h5>
+                @foreach (var lines in ViewBag.Lines)
+                {
+                <label>
+                        <input class="form-check-input" type="checkbox" name="selectedLinesId" value="@lines.Id" @(ViewBag.SelectedLinesId.Contains(lines.Id) ? "checked" : "") />
+                    @lines.Name
+                </label>
+                <br />
+                }
+            </div>
+        </div>
+        <input class="btn btn-dark mt-2" type="submit" value="Найти" />
     }
-    <input class="btn btn-dark mt-2" type="submit" value="Найти" />
-}
+</div>
+
     
 <div class="container">
     <div class="row">

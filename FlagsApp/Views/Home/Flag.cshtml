@@ -7,22 +7,43 @@
     <div class="card-body">
         <h4 class="card-title">@ViewBag.Flag.CountryName</h4>
 
-        <h5 class="card-title">Цвета флага</h5>
 
-
-        @using (Html.BeginForm("Flag", "Home", FormMethod.Post))
-        {
-            foreach (var color in ViewBag.Colors)
+        <div class="container">
+            @using (Html.BeginForm("Flag", "Home", FormMethod.Post))
             {
-                <label>
-                    <input class="form-check-input" type="checkbox" name="selectedColorIds" value="@color.Id" @(ViewBag.SelectedСolorsId.Contains(color.Id) ? "checked" : "") />
-                    @color.Name
-                </label>
-                <br />
+            <div class="row">
+                <div class="col">
+                        <h5 class="card-title">Цвета флага</h5>
+                        @foreach (var color in ViewBag.Colors)
+                        {
+                        <label>
+                            <input class="form-check-input" type="checkbox" name="selectedColorsId" value="@color.Id" @(ViewBag.SelectedСolorsId.Contains(color.Id) ? "checked" : "") />
+                            @color.Name
+                        </label>
+                        <br />
+                        }
+                </div>
+                    <div class="col">
+                        <h5 class="card-title">Линии флага</h5>
+
+                        @foreach (var lines in ViewBag.Lines)
+                        {
+                            <label>
+                                <input class="form-check-input" type="checkbox" name="selectedLinesId" value="@lines.Id" @(ViewBag.SelectedLinesId.Contains(lines.Id) ? "checked" : "") />
+                                @lines.Name
+                            </label>
+                            <br />
+                        }
+                    </div>
+            </div>
+                <input type="hidden" name="flagId" value="@ViewBag.Flag.Id" />
+                <input class="btn btn-dark mt-2" type="submit" value="Save Colors" />
             }
-            <input type="hidden" name="flagId" value="@ViewBag.Flag.Id" />
-            <input class="btn btn-dark mt-2" type="submit" value="Save Colors" />
-        }
+        </div>
+      
+           
+           
+       
 
     </div>
 </div>

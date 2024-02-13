@@ -1,54 +1,55 @@
 ﻿using FlagsApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace FlagsApp.Controllers
 {
-    public class FlagColorApiService : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FlagLinesApiService : ControllerBase
     {
         private readonly HttpClient httpClient;
-        private const string baseApiUrl = "https://localhost:7156/api/flagColorApi/";
+        private const string baseApiUrl = "https://localhost:7156/api/flagLinesApi/";
 
-        public FlagColorApiService()
+        public FlagLinesApiService()
         {
             httpClient = new HttpClient();
         }
 
-        public async Task<List<Color>> GetColorsByFlagId(int flagId)
+        public async Task<List<Lines>> GetLinesByFlagId(int flagId)
         {
-            var response = await httpClient.GetAsync(baseApiUrl + "ColorsByFlagId/" + flagId.ToString());
+            var response = await httpClient.GetAsync(baseApiUrl + "LinesByFlagId/" + flagId.ToString());
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Error: {response.StatusCode}");
             }
 
-            var colors = JsonConvert.DeserializeObject<List<Color>>(await response.Content.ReadAsStringAsync());
-            return colors;
+            var lines = JsonConvert.DeserializeObject<List<Lines>>(await response.Content.ReadAsStringAsync());
+            return lines;
         }
 
-        public async Task<List<Color>> GetFlagsByColorId(int colorId)
+        public async Task<List<Lines>> GetFlagsByLinesId(int linesId)
         {
-            var response = await httpClient.GetAsync(baseApiUrl + "FlagsByColorId/" + colorId.ToString());
+            var response = await httpClient.GetAsync(baseApiUrl + "FlagsByLinesId/" + linesId.ToString());
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Error: {response.StatusCode}");
             }
 
-            var flags = JsonConvert.DeserializeObject<List<Color>>(await response.Content.ReadAsStringAsync());
+            var flags = JsonConvert.DeserializeObject<List<Lines>>(await response.Content.ReadAsStringAsync());
             return flags;
         }
 
 
-        public async Task<List<Flag>> GetAllFlagsByColorsId(List<int> selectedColorsId)
+        public async Task<List<Flag>> GetAllFlagsByLinesId(List<int> selectedLinesId)
         {
             var allFlags = new List<Flag>();
-            foreach (var i in selectedColorsId)
+            foreach (var i in selectedLinesId)
             {
-                var response = await httpClient.GetAsync(baseApiUrl + "FlagsByColorId/" + i.ToString());
+                var response = await httpClient.GetAsync(baseApiUrl + "FlagsByLinesId/" + i.ToString());
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"Error: {response.StatusCode}");
@@ -59,9 +60,9 @@ namespace FlagsApp.Controllers
             }
             return allFlags.Distinct().ToList();
         }
-        public async Task DeleteColorsByFlagId(int flagId)
+        public async Task DeleteLinesByFlagId(int flagId)
         {
-            var response = await httpClient.DeleteAsync(baseApiUrl + "ColorsByFlagId/" + flagId);
+            var response = await httpClient.DeleteAsync(baseApiUrl + "LinesByFlagId/" + flagId);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -69,9 +70,9 @@ namespace FlagsApp.Controllers
             }
         }
 
-        public async Task Create(FlagColor flagColor)
+        public async Task Create(FlagLines flagLines)
         {
-            var response = await httpClient.PostAsJsonAsync(baseApiUrl, flagColor);
+            var response = await httpClient.PostAsJsonAsync(baseApiUrl, flagLines);
 
             if (!response.IsSuccessStatusCode)
             {
