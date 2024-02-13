@@ -1,6 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+
+ @using (Html.BeginForm("FilterForCountry", "Home", FormMethod.Post))
+{
+    <div class="mb-3">
+        <h4 for="exampleInputEmail1" class="form-label">Поиск по названию</h4>
+        <input required type="text" class="form-control" name="countryName" aria-describedby="emailHelp">
+        <input class="btn btn-dark mt-2" type="submit" value="Найти" />
+    </div>
+    
+}
+
 <h4>Фильтры</h4>
 <div class="container">
     @using (Html.BeginForm("Index", "Home", FormMethod.Post))

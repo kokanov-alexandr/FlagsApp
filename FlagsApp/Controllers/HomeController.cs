@@ -23,20 +23,19 @@ namespace FlagsApp.Controllers
             flagLinesApiService = new FlagLinesApiService();
         }
 
+        private async Task ReloadFilterData()
+        {
+            ViewBag.—olors = await colorApiService.GetAllColors();
+            ViewBag.Lines = await linesApiService.GetAllLines();
+            ViewBag.Selected—olorsId = new List<int>();
+            ViewBag.SelectedLinesId = new List<int>();
+        }
+
         [HttpGet]   
         public async Task<IActionResult> Index()
         {
-            var flags = await flagsApiService.GetAllFlags();
-            var colors = await colorApiService.GetAllColors();
-            var lines = await linesApiService.GetAllLines();
-
-            ViewBag.Flags = flags;
-            ViewBag.—olors = colors;
-            ViewBag.Lines = lines;
-
-            ViewBag.Selected—olorsId = new List<int>();
-            ViewBag.SelectedLinesId = new List<int>();
-
+            ViewBag.Flags = await flagsApiService.GetAllFlags();
+            await ReloadFilterData();
             return View();
         }
 
@@ -44,12 +43,28 @@ namespace FlagsApp.Controllers
         private async Task<List<Flag>> FilterFlags(List<int> selectedColorsId, List<int> selectedLinesId)
         {
             var allFlags = await flagsApiService.GetAllFlags();
-
             var flagsByColors = selectedColorsId.Count != 0 ? await flagColorApiService.GetAllFlagsByColorsId(selectedColorsId) : allFlags;
-
             var flagsByLines = selectedLinesId.Count != 0 ? await flagLinesApiService.GetAllFlagsByLinesId(selectedLinesId) : allFlags;
 
             return flagsByColors.Intersect(flagsByLines).ToList();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FilterForCountry(string countryName)
+        {
+            var allFlags = await flagsApiService.GetAllFlags();
+            await ReloadFilterData();
+
+            if (string.IsNullOrEmpty(countryName))
+            {
+                ViewBag.Flags = allFlags;
+                return View("Index");
+            }
+
+            var filteredFlags = allFlags.Where(f => f.CountryName.Contains(countryName, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            ViewBag.Flags = filteredFlags;
+         
+            return View("Index");   
         }
 
         [HttpPost]
@@ -63,26 +78,22 @@ namespace FlagsApp.Controllers
             ViewBag.Selected—olorsId = selectedColorsId;
             ViewBag.SelectedLinesId = selectedLinesId;
 
-
             return View("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Flag(int id)
         {
-            var colors = await colorApiService.GetAllColors();
-            var lines = await linesApiService.GetAllLines();
-
             var selected—olors = await flagColorApiService.GetColorsByFlagId(id);
-            var selectedColorsId = selected—olors.Select(l => l.Id).ToList();
+            var selectedColorsId = selected—olors.Select(Ò => Ò.Id).ToList();
 
             var selectedLines = await flagLinesApiService.GetLinesByFlagId(id);
-            var selectedLinesId = selectedLines.Select(l => l.Id).ToList();
+            var selectedLinesId = selectedLines.Select(Ò => Ò.Id).ToList();
 
             var flag = await flagsApiService.GetFlag(id);
 
-            ViewBag.Colors = colors;
-            ViewBag.LInes = lines;
+            ViewBag.Colors = await colorApiService.GetAllColors();
+            ViewBag.LInes = await linesApiService.GetAllLines();
             ViewBag.Selected—olorsId = selectedColorsId;
             ViewBag.SelectedLinesId = selectedLinesId;
             
