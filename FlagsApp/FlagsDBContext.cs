@@ -14,6 +14,7 @@ namespace FlagsApp
         public DbSet<Lines> Lines { get; set; }
         public DbSet<FlagLines> FlagLines { get; set; }
         public DbSet<GraphicElement> GraphicElements {  get; set; } 
+        public DbSet<FlagGraphicElement> FlagGraphicElements { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +32,7 @@ namespace FlagsApp
                 .WithMany()
                 .HasForeignKey(fc => fc.ColorId);
 
+
             modelBuilder.Entity<FlagLines>()
                 .HasKey(fl => new { fl.FlagId, fl.LinesId });
 
@@ -43,6 +45,20 @@ namespace FlagsApp
                 .HasOne<Lines>()
                 .WithMany()
                 .HasForeignKey(fl => fl.LinesId);
+
+
+            modelBuilder.Entity<FlagGraphicElement>()
+               .HasKey(fge => new { fge.FlagId, fge.GraphicElementId });
+
+            modelBuilder.Entity<FlagGraphicElement>()
+                .HasOne<Flag>()
+                .WithMany()
+                .HasForeignKey(fge => fge.FlagId);
+
+            modelBuilder.Entity<FlagGraphicElement>()
+                .HasOne<GraphicElement>()
+                .WithMany()
+                .HasForeignKey(fge => fge.GraphicElementId);
         }
 
     }

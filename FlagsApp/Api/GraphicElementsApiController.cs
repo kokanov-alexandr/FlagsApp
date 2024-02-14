@@ -6,11 +6,11 @@ namespace FlagsApp.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GraphicElementApiController : ControllerBase
+    public class GraphicElementsApiController : ControllerBase
     {
         private readonly FlagsDBContext dbContext;
 
-        public GraphicElementApiController(FlagsDBContext dbContext)
+        public GraphicElementsApiController(FlagsDBContext dbContext)
         {
             this.dbContext = dbContext;
         }

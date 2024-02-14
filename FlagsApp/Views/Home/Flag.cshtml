@@ -25,12 +25,22 @@
                 </div>  
                     <div class="col">
                         <h5 class="card-title">Линии флага</h5>
-
                         @foreach (var lines in ViewBag.Lines)
                         {
                             <label>
                                 <input class="form-check-input" type="checkbox" name="selectedLinesId" value="@lines.Id" @(ViewBag.SelectedLinesId.Contains(lines.Id) ? "checked" : "") />
                                 @lines.Name
+                            </label>
+                            <br />
+                        }
+                    </div>
+                    <div class="col">
+                        <h5 class="card-title">Графические элементы флага</h5>
+                        @foreach (var graphicElement in ViewBag.GraphicElements)
+                        {
+                            <label>
+                                <input class="form-check-input" type="checkbox" name="selectedGraphicElementsId" value="@graphicElement.Id" @(ViewBag.SelectedGraphicElementsId.Contains(graphicElement.Id) ? "checked" : "") />
+                                @graphicElement.Name
                             </label>
                             <br />
                         }

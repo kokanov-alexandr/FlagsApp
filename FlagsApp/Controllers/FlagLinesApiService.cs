@@ -1,5 +1,4 @@
 ﻿using FlagsApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -28,19 +27,6 @@ namespace FlagsApp.Controllers
 
             var lines = JsonConvert.DeserializeObject<List<Lines>>(await response.Content.ReadAsStringAsync());
             return lines;
-        }
-
-        public async Task<List<Lines>> GetFlagsByLinesId(int linesId)
-        {
-            var response = await httpClient.GetAsync(baseApiUrl + "FlagsByLinesId/" + linesId.ToString());
-
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Error: {response.StatusCode}");
-            }
-
-            var flags = JsonConvert.DeserializeObject<List<Lines>>(await response.Content.ReadAsStringAsync());
-            return flags;
         }
 
 
