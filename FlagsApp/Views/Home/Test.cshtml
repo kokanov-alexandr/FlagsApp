@@ -1,0 +1,54 @@
+﻿@model FlagsTest
+
+<h2>Тестирование</h2>
+
+
+@if (Model.QuestionNumber == Model.QuestionsCount + 1)
+{
+    <h3>Результаты: @Model.CorrectAnswersCount из @Model.QuestionsCount</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">&#8470;</th>
+                <th scope="col">Ваш ответ</th>
+                <th scope="col">Правильный ответ</th>
+                <th scope="col">Флаг</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.QuestionsCount; i++)
+            {
+                <tr class="@(Model.Flags[i].CountryName != Model.Answers[i].Trim() ? "table-danger" : "table-success")">
+                    <th scope="row">@(i + 1)</th>
+                    <td>@Model.Answers[i]</td>
+                    <td>@Model.Flags[i].CountryName</td>
+                    <td class="table" style="width: 12rem">
+                        <a href="@Url.Action("Flag", "Home", new { id = Model.Flags[i].Id })" target="_blank">
+                            <img src="~/images/@Model.Flags[i].ImageName" class="card-img-top" alt="@Model.Flags[i].CountryName" style="width: 100%;">
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="card" style="width: 35rem;">
+        <h4 class="card-text">Вопрос @Model.QuestionNumber из @Model.QuestionsCount</h4>
+        @using (Html.BeginForm("Test", "Home", FormMethod.Post))
+        {
+            <img src="~/images/@Model.Flags[Model.QuestionNumber - 1].ImageName" class="card-img-top" alt="...">
+            <div class="card-body">
+                @* <h4 class="card-text">@Model.Flags[Model.QuestionNumber - 1].CountryName</h4> *@
+
+                <input required type="text" class="form-control" name="answer" autofocus>
+
+                <input class="btn btn-dark mt-2" type="submit" value="Далее" />
+            </div>
+        }
+    </div>
+}
+
+
+

@@ -1,5 +1,7 @@
 using FlagsApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -19,7 +21,6 @@ namespace FlagsApp.Controllers
 
         private readonly GraphicElementApiService graphicElementApiService;
         private readonly FlagGraphicElementApiService flagGraphicElementApiService;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -149,15 +150,77 @@ namespace FlagsApp.Controllers
             return RedirectToAction("Flag", new {flagId});
         }
 
-        public IActionResult Privacy()
+
+
+        private FlagsTest GetFlagsTest()
         {
-            return View();
+            var questionsCount = 3;
+            var flags = flagsApiService.GetAllFlags().Result;
+
+            var random = new Random();
+            var shuffledFlags = flags.OrderBy(x => random.Next()).ToList();
+
+            var selectedFlags = shuffledFlags.Take(questionsCount).ToList();
+
+            return new FlagsTest
+            {
+                Flags = selectedFlags,
+                QuestionsCount = questionsCount,
+                CorrectAnswersCount = 0,
+                QuestionNumber = 1,
+                Answers = new List<string>()
+            };
+        }
+            
+
+        private bool IsFlagsTestStarted()
+        {
+            string isFlagsTestStartedString = HttpContext.Session.GetString("IsFlagsTestStarted");
+            return !string.IsNullOrEmpty(isFlagsTestStartedString) && 
+                bool.TryParse(isFlagsTestStartedString, out bool result) ? result : false;
+
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult Test()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+           
+            if (!IsFlagsTestStarted())
+            {
+                string flagsTestString = JsonConvert.SerializeObject(GetFlagsTest());
+                HttpContext.Session.SetString("FlagsTest", flagsTestString);
+                HttpContext.Session.SetString("IsFlagsTestStarted", true.ToString());
+            }
+
+            string s = HttpContext.Session.GetString("FlagsTest");
+            FlagsTest flagsTest = JsonConvert.DeserializeObject<FlagsTest>(s);
+
+            if (flagsTest.QuestionNumber > flagsTest.QuestionsCount)
+            {
+                HttpContext.Session.Remove("FlagsTest");
+                HttpContext.Session.Remove("IsFlagsTestStarted");
+            }
+            return View(flagsTest);
+        }
+
+        [HttpPost]
+        public IActionResult Test(string answer)
+        {
+            string s = HttpContext.Session.GetString("FlagsTest");
+            FlagsTest flagsTest = JsonConvert.DeserializeObject<FlagsTest>(s);
+
+
+            if (flagsTest.Flags[flagsTest.QuestionNumber - 1].CountryName == answer)
+            {
+                flagsTest.CorrectAnswersCount++;
+            }
+
+            flagsTest.QuestionNumber++;
+            flagsTest.Answers.Add(answer);
+            string flagsTestString = JsonConvert.SerializeObject(flagsTest);
+            HttpContext.Session.SetString("FlagsTest", flagsTestString);
+
+            return RedirectToAction("Test");
         }
     }
 }
